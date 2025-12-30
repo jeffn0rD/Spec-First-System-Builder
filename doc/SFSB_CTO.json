@@ -1,0 +1,1008 @@
+{
+  "project": {
+    "id": "specfirst-system-builder",
+    "name": "SpecFirst System Builder",
+    "version": "0.1.0",
+    "description": "A platform that converts natural-language descriptions into machine-readable specs, generates deterministic code via Fastify+FastAPI stack, and learns from causal analysis"
+  },
+  "technology_stack": {
+    "client_gateway": {
+      "language": "TypeScript",
+      "runtime": "Node.js",
+      "framework": "Fastify",
+      "testing": "Vitest"
+    },
+    "backend": {
+      "language": "Python",
+      "framework": "FastAPI",
+      "orchestration": "Prefect",
+      "templating": "Jinja2",
+      "graph_analysis": "NetworkX",
+      "causal_inference": "DoWhy",
+      "validation": "Pydantic"
+    },
+    "llm_integration": {
+      "providers": ["OpenRouter", "OpenAI"],
+      "usage": "translation and planning only"
+    },
+    "persistence": {
+      "database": "PostgreSQL",
+      "storage": "filesystem or object store",
+      "containerization": "Docker"
+    }
+  },
+  "data_models": {
+    "Project": {
+      "description": "Represents a project being built by the system",
+      "fields": {
+        "id": {
+          "type": "string",
+          "required": true,
+          "primary_key": true
+        },
+        "name": {
+          "type": "string",
+          "required": true
+        },
+        "version": {
+          "type": "string",
+          "required": true
+        },
+        "description": {
+          "type": "string",
+          "required": false
+        },
+        "created_at": {
+          "type": "date-time",
+          "required": true
+        },
+        "updated_at": {
+          "type": "date-time",
+          "required": true
+        }
+      }
+    },
+    "CTOSpec": {
+      "description": "Canonical Technical Object specification with technology stack",
+      "fields": {
+        "id": {
+          "type": "uuid",
+          "required": true,
+          "primary_key": true
+        },
+        "project_id": {
+          "type": "string",
+          "required": true
+        },
+        "version": {
+          "type": "string",
+          "required": true
+        },
+        "content": {
+          "type": "string",
+          "required": true
+        },
+        "technology_stack": {
+          "type": "string",
+          "required": true
+        },
+        "status": {
+          "type": "string",
+          "required": true
+        },
+        "approved_at": {
+          "type": "date-time",
+          "required": false
+        }
+      }
+    },
+    "MermaidDiagram": {
+      "description": "Mermaid diagram artifact for system or workflow visualization",
+      "fields": {
+        "id": {
+          "type": "uuid",
+          "required": true,
+          "primary_key": true
+        },
+        "cto_spec_id": {
+          "type": "uuid",
+          "required": true
+        },
+        "diagram_type": {
+          "type": "string",
+          "required": true
+        },
+        "content": {
+          "type": "string",
+          "required": true
+        },
+        "validated": {
+          "type": "boolean",
+          "required": true
+        }
+      }
+    },
+    "ArchitecturePlan": {
+      "description": "Modular architecture plan with layers and modules",
+      "fields": {
+        "id": {
+          "type": "uuid",
+          "required": true,
+          "primary_key": true
+        },
+        "cto_spec_id": {
+          "type": "uuid",
+          "required": true
+        },
+        "layers": {
+          "type": "string",
+          "required": true
+        },
+        "modules": {
+          "type": "string",
+          "required": true
+        },
+        "dependency_graph": {
+          "type": "string",
+          "required": false
+        },
+        "metrics": {
+          "type": "string",
+          "required": false
+        },
+        "status": {
+          "type": "string",
+          "required": true
+        },
+        "approved_at": {
+          "type": "date-time",
+          "required": false
+        }
+      }
+    },
+    "GeneratorScript": {
+      "description": "Python CLI script that generates code from specs using Jinja2",
+      "fields": {
+        "id": {
+          "type": "uuid",
+          "required": true,
+          "primary_key": true
+        },
+        "name": {
+          "type": "string",
+          "required": true
+        },
+        "type": {
+          "type": "string",
+          "required": true
+        },
+        "script_content": {
+          "type": "string",
+          "required": true
+        },
+        "template_refs": {
+          "type": "string",
+          "required": false
+        },
+        "allowed_imports": {
+          "type": "string",
+          "required": true
+        },
+        "version": {
+          "type": "string",
+          "required": true
+        }
+      }
+    },
+    "BuildExecution": {
+      "description": "Record of a Prefect-orchestrated build pipeline execution",
+      "fields": {
+        "id": {
+          "type": "uuid",
+          "required": true,
+          "primary_key": true
+        },
+        "project_id": {
+          "type": "string",
+          "required": true
+        },
+        "cto_spec_id": {
+          "type": "uuid",
+          "required": true
+        },
+        "architecture_plan_id": {
+          "type": "uuid",
+          "required": true
+        },
+        "prefect_flow_run_id": {
+          "type": "string",
+          "required": false
+        },
+        "status": {
+          "type": "string",
+          "required": true
+        },
+        "started_at": {
+          "type": "date-time",
+          "required": true
+        },
+        "completed_at": {
+          "type": "date-time",
+          "required": false
+        },
+        "metrics": {
+          "type": "string",
+          "required": false
+        }
+      }
+    },
+    "LLMUsageMetric": {
+      "description": "Record of LLM API call via OpenRouter or OpenAI",
+      "fields": {
+        "id": {
+          "type": "uuid",
+          "required": true,
+          "primary_key": true
+        },
+        "build_execution_id": {
+          "type": "uuid",
+          "required": false
+        },
+        "step": {
+          "type": "string",
+          "required": true
+        },
+        "model_name": {
+          "type": "string",
+          "required": true
+        },
+        "prompt_tokens": {
+          "type": "integer",
+          "required": true
+        },
+        "completion_tokens": {
+          "type": "integer",
+          "required": true
+        },
+        "total_tokens": {
+          "type": "integer",
+          "required": true
+        },
+        "latency_ms": {
+          "type": "integer",
+          "required": true
+        },
+        "retry_count": {
+          "type": "integer",
+          "required": true
+        },
+        "timestamp": {
+          "type": "date-time",
+          "required": true
+        }
+      }
+    },
+    "LessonsLearned": {
+      "description": "Structured record of failures and fixes with context",
+      "fields": {
+        "id": {
+          "type": "uuid",
+          "required": true,
+          "primary_key": true
+        },
+        "build_execution_id": {
+          "type": "uuid",
+          "required": true
+        },
+        "error_type": {
+          "type": "string",
+          "required": true
+        },
+        "error_description": {
+          "type": "string",
+          "required": true
+        },
+        "fix_description": {
+          "type": "string",
+          "required": false
+        },
+        "cto_snippet": {
+          "type": "string",
+          "required": false
+        },
+        "plan_snippet": {
+          "type": "string",
+          "required": false
+        },
+        "generator_involved": {
+          "type": "string",
+          "required": false
+        },
+        "context": {
+          "type": "string",
+          "required": true
+        },
+        "created_at": {
+          "type": "date-time",
+          "required": true
+        }
+      }
+    },
+    "CausalAnalysis": {
+      "description": "Results from DoWhy causal inference analysis",
+      "fields": {
+        "id": {
+          "type": "uuid",
+          "required": true,
+          "primary_key": true
+        },
+        "analysis_date": {
+          "type": "date-time",
+          "required": true
+        },
+        "causal_graph": {
+          "type": "string",
+          "required": true
+        },
+        "effect_estimates": {
+          "type": "string",
+          "required": true
+        },
+        "causal_weights": {
+          "type": "string",
+          "required": true
+        },
+        "dataset_size": {
+          "type": "integer",
+          "required": true
+        }
+      }
+    }
+  },
+  "api_resources": {
+    "projects": {
+      "base_path": "/api/v1/projects",
+      "operations": [
+        {
+          "method": "GET",
+          "path": "/",
+          "operation_id": "listProjects",
+          "summary": "List all projects",
+          "request_model": null,
+          "response_model": "Project"
+        },
+        {
+          "method": "POST",
+          "path": "/",
+          "operation_id": "createProject",
+          "summary": "Create a new project",
+          "request_model": "Project",
+          "response_model": "Project"
+        },
+        {
+          "method": "GET",
+          "path": "/{id}",
+          "operation_id": "getProject",
+          "summary": "Get project by ID",
+          "request_model": null,
+          "response_model": "Project"
+        }
+      ]
+    },
+    "cto_specs": {
+      "base_path": "/api/v1/cto-specs",
+      "operations": [
+        {
+          "method": "POST",
+          "path": "/",
+          "operation_id": "createCTOSpec",
+          "summary": "Generate CTO spec from natural language via LLM",
+          "request_model": "CTOSpec",
+          "response_model": "CTOSpec"
+        },
+        {
+          "method": "GET",
+          "path": "/{id}",
+          "operation_id": "getCTOSpec",
+          "summary": "Get CTO spec by ID",
+          "request_model": null,
+          "response_model": "CTOSpec"
+        },
+        {
+          "method": "POST",
+          "path": "/{id}/approve",
+          "operation_id": "approveCTOSpec",
+          "summary": "Approve and freeze CTO spec",
+          "request_model": null,
+          "response_model": "CTOSpec"
+        },
+        {
+          "method": "POST",
+          "path": "/{id}/validate",
+          "operation_id": "validateCTOSpec",
+          "summary": "Validate CTO spec against JSON schema and consistency rules",
+          "request_model": null,
+          "response_model": "CTOSpec"
+        }
+      ]
+    },
+    "diagrams": {
+      "base_path": "/api/v1/diagrams",
+      "operations": [
+        {
+          "method": "POST",
+          "path": "/",
+          "operation_id": "generateDiagrams",
+          "summary": "Generate Mermaid diagrams from CTO spec",
+          "request_model": "MermaidDiagram",
+          "response_model": "MermaidDiagram"
+        },
+        {
+          "method": "GET",
+          "path": "/{id}",
+          "operation_id": "getDiagram",
+          "summary": "Get diagram by ID",
+          "request_model": null,
+          "response_model": "MermaidDiagram"
+        },
+        {
+          "method": "POST",
+          "path": "/{id}/validate",
+          "operation_id": "validateDiagram",
+          "summary": "Validate Mermaid diagram syntax",
+          "request_model": null,
+          "response_model": "MermaidDiagram"
+        }
+      ]
+    },
+    "architecture_plans": {
+      "base_path": "/api/v1/architecture-plans",
+      "operations": [
+        {
+          "method": "POST",
+          "path": "/",
+          "operation_id": "createArchitecturePlan",
+          "summary": "Generate architecture plan from CTO spec and diagrams",
+          "request_model": "ArchitecturePlan",
+          "response_model": "ArchitecturePlan"
+        },
+        {
+          "method": "GET",
+          "path": "/{id}",
+          "operation_id": "getArchitecturePlan",
+          "summary": "Get architecture plan by ID",
+          "request_model": null,
+          "response_model": "ArchitecturePlan"
+        },
+        {
+          "method": "POST",
+          "path": "/{id}/evaluate",
+          "operation_id": "evaluateArchitecturePlan",
+          "summary": "Evaluate plan metrics and detect cycles or violations",
+          "request_model": null,
+          "response_model": "ArchitecturePlan"
+        },
+        {
+          "method": "POST",
+          "path": "/{id}/approve",
+          "operation_id": "approveArchitecturePlan",
+          "summary": "Approve and freeze architecture plan",
+          "request_model": null,
+          "response_model": "ArchitecturePlan"
+        }
+      ]
+    },
+    "generators": {
+      "base_path": "/api/v1/generators",
+      "operations": [
+        {
+          "method": "POST",
+          "path": "/",
+          "operation_id": "createGenerator",
+          "summary": "Create generator script from CTO and plan via LLM",
+          "request_model": "GeneratorScript",
+          "response_model": "GeneratorScript"
+        },
+        {
+          "method": "GET",
+          "path": "/",
+          "operation_id": "listGenerators",
+          "summary": "List available generator scripts",
+          "request_model": null,
+          "response_model": "GeneratorScript"
+        },
+        {
+          "method": "GET",
+          "path": "/{id}",
+          "operation_id": "getGenerator",
+          "summary": "Get generator script by ID",
+          "request_model": null,
+          "response_model": "GeneratorScript"
+        },
+        {
+          "method": "POST",
+          "path": "/{id}/validate",
+          "operation_id": "validateGenerator",
+          "summary": "Validate generator script imports and determinism",
+          "request_model": null,
+          "response_model": "GeneratorScript"
+        }
+      ]
+    },
+    "builds": {
+      "base_path": "/api/v1/builds",
+      "operations": [
+        {
+          "method": "POST",
+          "path": "/",
+          "operation_id": "startBuild",
+          "summary": "Start Prefect-orchestrated build execution",
+          "request_model": "BuildExecution",
+          "response_model": "BuildExecution"
+        },
+        {
+          "method": "GET",
+          "path": "/{id}",
+          "operation_id": "getBuildStatus",
+          "summary": "Get build execution status and metrics",
+          "request_model": null,
+          "response_model": "BuildExecution"
+        },
+        {
+          "method": "GET",
+          "path": "/",
+          "operation_id": "listBuilds",
+          "summary": "List build executions",
+          "request_model": null,
+          "response_model": "BuildExecution"
+        }
+      ]
+    },
+    "llm_metrics": {
+      "base_path": "/api/v1/llm-metrics",
+      "operations": [
+        {
+          "method": "POST",
+          "path": "/",
+          "operation_id": "recordLLMUsage",
+          "summary": "Record LLM API usage metrics",
+          "request_model": "LLMUsageMetric",
+          "response_model": "LLMUsageMetric"
+        },
+        {
+          "method": "GET",
+          "path": "/",
+          "operation_id": "getLLMMetrics",
+          "summary": "Query LLM usage metrics",
+          "request_model": null,
+          "response_model": "LLMUsageMetric"
+        }
+      ]
+    },
+    "lessons": {
+      "base_path": "/api/v1/lessons",
+      "operations": [
+        {
+          "method": "POST",
+          "path": "/",
+          "operation_id": "recordLesson",
+          "summary": "Record a lesson learned from failure or fix",
+          "request_model": "LessonsLearned",
+          "response_model": "LessonsLearned"
+        },
+        {
+          "method": "GET",
+          "path": "/",
+          "operation_id": "searchLessons",
+          "summary": "Search lessons learned by context or error type",
+          "request_model": null,
+          "response_model": "LessonsLearned"
+        }
+      ]
+    },
+    "causal_analysis": {
+      "base_path": "/api/v1/causal-analysis",
+      "operations": [
+        {
+          "method": "POST",
+          "path": "/",
+          "operation_id": "runCausalAnalysis",
+          "summary": "Run DoWhy causal analysis on historical metrics",
+          "request_model": "CausalAnalysis",
+          "response_model": "CausalAnalysis"
+        },
+        {
+          "method": "GET",
+          "path": "/latest",
+          "operation_id": "getLatestCausalAnalysis",
+          "summary": "Get latest causal analysis results and weights",
+          "request_model": null,
+          "response_model": "CausalAnalysis"
+        }
+      ]
+    }
+  },
+  "services": {
+    "fastify_gateway": {
+      "type": "internal",
+      "handles_models": [],
+      "depends_on": [
+        "fastapi_backend"
+      ]
+    },
+    "fastapi_backend": {
+      "type": "internal",
+      "handles_models": [
+        "Project",
+        "CTOSpec",
+        "MermaidDiagram",
+        "ArchitecturePlan",
+        "GeneratorScript",
+        "BuildExecution",
+        "LLMUsageMetric",
+        "LessonsLearned",
+        "CausalAnalysis"
+      ],
+      "depends_on": [
+        "spec_translator",
+        "architecture_planner",
+        "generator_service",
+        "build_orchestrator",
+        "metrics_collector",
+        "causal_analyzer"
+      ]
+    },
+    "spec_translator": {
+      "type": "internal",
+      "handles_models": [
+        "CTOSpec",
+        "MermaidDiagram"
+      ],
+      "depends_on": [
+        "llm_service",
+        "spec_validator",
+        "diagram_generator"
+      ]
+    },
+    "architecture_planner": {
+      "type": "internal",
+      "handles_models": [
+        "ArchitecturePlan"
+      ],
+      "depends_on": [
+        "llm_service",
+        "networkx_analyzer",
+        "causal_weights_store"
+      ]
+    },
+    "generator_service": {
+      "type": "internal",
+      "handles_models": [
+        "GeneratorScript"
+      ],
+      "depends_on": [
+        "llm_service",
+        "jinja2_engine",
+        "code_validator"
+      ]
+    },
+    "build_orchestrator": {
+      "type": "internal",
+      "handles_models": [
+        "BuildExecution"
+      ],
+      "depends_on": [
+        "prefect_service",
+        "docker_sandbox",
+        "test_runner"
+      ]
+    },
+    "metrics_collector": {
+      "type": "internal",
+      "handles_models": [
+        "LLMUsageMetric",
+        "LessonsLearned"
+      ],
+      "depends_on": [
+        "metrics_db",
+        "vector_store"
+      ]
+    },
+    "causal_analyzer": {
+      "type": "internal",
+      "handles_models": [
+        "CausalAnalysis"
+      ],
+      "depends_on": [
+        "metrics_db",
+        "dowhy_engine"
+      ]
+    },
+    "spec_validator": {
+      "type": "internal",
+      "handles_models": [
+        "CTOSpec"
+      ],
+      "depends_on": [
+        "main_db"
+      ]
+    },
+    "diagram_generator": {
+      "type": "internal",
+      "handles_models": [
+        "MermaidDiagram"
+      ],
+      "depends_on": [
+        "mermaid_cli"
+      ]
+    },
+    "networkx_analyzer": {
+      "type": "internal",
+      "handles_models": [],
+      "depends_on": [
+        "graph_store"
+      ]
+    },
+    "jinja2_engine": {
+      "type": "internal",
+      "handles_models": [],
+      "depends_on": [
+        "template_store"
+      ]
+    },
+    "docker_sandbox": {
+      "type": "internal",
+      "handles_models": [],
+      "depends_on": [
+        "docker_runtime"
+      ]
+    },
+    "test_runner": {
+      "type": "internal",
+      "handles_models": [],
+      "depends_on": [
+        "test_db"
+      ]
+    },
+    "prefect_service": {
+      "type": "adapter",
+      "handles_models": [],
+      "depends_on": [
+        "prefect_server"
+      ]
+    }
+  },
+  "datastores": {
+    "main_db": {
+      "technology": "postgres",
+      "description": "Primary PostgreSQL database for projects, specs, plans, and executions"
+    },
+    "metrics_db": {
+      "technology": "postgres",
+      "description": "PostgreSQL database for build metrics, LLM usage, and causal analysis datasets"
+    },
+    "vector_store": {
+      "technology": "other",
+      "description": "Vector database for lessons learned retrieval and similarity search"
+    },
+    "graph_store": {
+      "technology": "other",
+      "description": "NetworkX in-memory or optional Neo4j for dependency and architecture graphs"
+    },
+    "template_store": {
+      "technology": "filesystem",
+      "description": "File system storage for Jinja2 code generation templates"
+    },
+    "test_db": {
+      "technology": "postgres",
+      "description": "Test results and coverage data storage"
+    },
+    "causal_weights_store": {
+      "technology": "filesystem",
+      "description": "JSON file storage for causal effect estimates and weights from DoWhy"
+    }
+  },
+  "external_systems": {
+    "llm_service": {
+      "kind": "http_api",
+      "display_name": "LLM Service (OpenRouter/OpenAI)",
+      "description": "External LLM API via OpenRouter or OpenAI SDK for translation and planning"
+    },
+    "prefect_server": {
+      "kind": "http_api",
+      "display_name": "Prefect Server",
+      "description": "Local or cloud Prefect server for workflow orchestration"
+    },
+    "docker_runtime": {
+      "kind": "other",
+      "display_name": "Docker Runtime",
+      "description": "Container runtime for sandboxed code generation and test execution"
+    },
+    "dowhy_engine": {
+      "kind": "other",
+      "display_name": "DoWhy Library",
+      "description": "Python library for causal inference and effect estimation"
+    },
+    "mermaid_cli": {
+      "kind": "other",
+      "display_name": "Mermaid CLI",
+      "description": "Mermaid diagram validation and rendering tool"
+    }
+  },
+  "workflows": {
+    "spec_to_code_lifecycle": {
+      "description": "End-to-end workflow from natural language to generated code via Fastify and FastAPI",
+      "states": [
+        "NaturalLanguageInput",
+        "CTOGenerated",
+        "DiagramsGenerated",
+        "CTOValidated",
+        "CTOApproved",
+        "ArchitecturePlanned",
+        "PlanEvaluated",
+        "PlanApproved",
+        "GeneratorsCreated",
+        "GeneratorsValidated",
+        "BuildExecuted",
+        "TestsRun",
+        "CodeGenerated",
+        "LessonsRecorded"
+      ],
+      "transitions": [
+        {
+          "from": "NaturalLanguageInput",
+          "to": "CTOGenerated"
+        },
+        {
+          "from": "CTOGenerated",
+          "to": "DiagramsGenerated"
+        },
+        {
+          "from": "DiagramsGenerated",
+          "to": "CTOValidated"
+        },
+        {
+          "from": "CTOValidated",
+          "to": "CTOApproved"
+        },
+        {
+          "from": "CTOApproved",
+          "to": "ArchitecturePlanned"
+        },
+        {
+          "from": "ArchitecturePlanned",
+          "to": "PlanEvaluated"
+        },
+        {
+          "from": "PlanEvaluated",
+          "to": "PlanApproved"
+        },
+        {
+          "from": "PlanApproved",
+          "to": "GeneratorsCreated"
+        },
+        {
+          "from": "GeneratorsCreated",
+          "to": "GeneratorsValidated"
+        },
+        {
+          "from": "GeneratorsValidated",
+          "to": "BuildExecuted"
+        },
+        {
+          "from": "BuildExecuted",
+          "to": "TestsRun"
+        },
+        {
+          "from": "TestsRun",
+          "to": "CodeGenerated"
+        },
+        {
+          "from": "TestsRun",
+          "to": "LessonsRecorded"
+        },
+        {
+          "from": "CodeGenerated",
+          "to": "LessonsRecorded"
+        }
+      ]
+    },
+    "architecture_refinement_loop": {
+      "description": "Iterative refinement of architecture plans with NetworkX analysis",
+      "states": [
+        "GenerateCandidates",
+        "EvaluateMetrics",
+        "ScoreCandidates",
+        "CheckConvergence",
+        "SelectBest",
+        "Complete"
+      ],
+      "transitions": [
+        {
+          "from": "GenerateCandidates",
+          "to": "EvaluateMetrics"
+        },
+        {
+          "from": "EvaluateMetrics",
+          "to": "ScoreCandidates"
+        },
+        {
+          "from": "ScoreCandidates",
+          "to": "CheckConvergence"
+        },
+        {
+          "from": "CheckConvergence",
+          "to": "GenerateCandidates"
+        },
+        {
+          "from": "CheckConvergence",
+          "to": "SelectBest"
+        },
+        {
+          "from": "SelectBest",
+          "to": "Complete"
+        }
+      ]
+    },
+    "causal_learning_cycle": {
+      "description": "Continuous learning workflow using DoWhy for system improvement",
+      "states": [
+        "MetricsCollected",
+        "CausalGraphBuilt",
+        "EffectsEstimated",
+        "WeightsUpdated",
+        "PoliciesAdjusted"
+      ],
+      "transitions": [
+        {
+          "from": "MetricsCollected",
+          "to": "CausalGraphBuilt"
+        },
+        {
+          "from": "CausalGraphBuilt",
+          "to": "EffectsEstimated"
+        },
+        {
+          "from": "EffectsEstimated",
+          "to": "WeightsUpdated"
+        },
+        {
+          "from": "WeightsUpdated",
+          "to": "PoliciesAdjusted"
+        },
+        {
+          "from": "PoliciesAdjusted",
+          "to": "MetricsCollected"
+        }
+      ]
+    }
+  },
+  "architecture_policies": {
+    "default": {
+      "description": "Default architectural constraints and rules for Fastify+FastAPI stack",
+      "layers": [
+        "domain",
+        "infra",
+        "api"
+      ],
+      "rules": [
+        "Modules may only depend on modules in the same or lower layer",
+        "Domain layer cannot depend on infra or api layers",
+        "No cycles in module dependency graph",
+        "Maximum fan-in per module: 8",
+        "Maximum fan-out per module: 12",
+        "LLMs used only as translators and planners, never as runtime components",
+        "All code generation must be deterministic and template-based via Jinja2",
+        "Human approval required for CTO specs, diagrams, and architecture plans",
+        "All builds must run in Docker sandboxed environments",
+        "Generator scripts must use only allowed imports and no network/time/random dependencies",
+        "Fastify gateway proxies requests to FastAPI backend on same server",
+        "All LLM calls via OpenRouter or OpenAI SDK with usage metrics recorded",
+        "CLI wrappers provided for all key generation and orchestration steps",
+        "NetworkX used for all graph analysis and cycle detection",
+        "Prefect used for all workflow orchestration and parallelization",
+        "DoWhy used for all causal inference and effect estimation"
+      ]
+    }
+  }
+}
