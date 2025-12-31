@@ -1,0 +1,86 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sfsb-backend"
+version = "0.1.0"
+description = "Spec-First System Builder - Python backend (FastAPI, Prefect, NetworkX, DoWhy, Jinja2)"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+  { name = "Your Name", email = "your.email@example.com" }
+]
+
+dependencies = [
+  # Core web/API
+  "fastapi>=0.104.0",
+  "uvicorn[standard]>=0.24.0",
+
+  # Data modeling & validation
+  "pydantic>=2.0.0",
+  "pydantic-settings>=2.0.0",
+  "jsonschema>=4.0.0",
+
+  # HTTP client for OpenRouter/LLM calls
+  "httpx>=0.25.0",
+
+  # Workflow orchestration
+  "prefect>=2.0.0",
+
+  # Templating for code generation
+  "jinja2>=3.1.0",
+
+  # Graphs
+  "networkx>=3.0",
+
+  # Causal inference
+  "dowhy>=0.11.0",
+
+  # Database (you can swap in your preferred stack)
+  "sqlalchemy>=2.0.0",
+  "alembic>=1.12.0",
+  "psycopg2-binary>=2.9.0",
+
+  # Misc utilities (if you know you’ll need them)
+  "python-dotenv>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=7.4.0",
+  "pytest-asyncio>=0.21.0",
+  "httpx>=0.25.0",
+  "black>=23.0.0",
+  "ruff>=0.1.0",
+  "mypy>=1.5.0",
+]
+
+# ============================================================================
+# CLI entry points
+# ============================================================================
+[project.scripts]
+# Project initializer (Phase 0/1 layout)
+sfsb-init = "backend.cli.init:main"
+
+# Planned future commands (stubs for now)
+# sfsb-spec = "backend.cli.spec:main"
+# sfsb-cto = "backend.cli.cto:main"
+# sfsb-arch = "backend.cli.arch:main"
+# sfsb-gen = "backend.cli.gen:main"
+# sfsb-build = "backend.cli.build:main"
+# sfsb-metrics = "backend.cli.metrics:main"
+# sfsb-causal = "backend.cli.causal:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["backend*"]
+
+[tool.black]
+line-length = 100
+target-version = ["py310"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"

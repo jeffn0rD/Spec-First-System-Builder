@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 from datetime import datetime
 from app.core.config import Settings, get_settings
+from datetime import datetime, UTC
 
 router = APIRouter()
 
@@ -23,7 +24,7 @@ async def health_check(settings: Settings = Depends(get_settings)):
     """
     return HealthResponse(
         status="healthy",
-        timestamp=datetime.utcnow(),
+        timestamp=datetime.now(UTC),
         app_name=settings.APP_NAME,
         version=settings.APP_VERSION,
         openrouter_configured=bool(settings.OPENROUTER_API_KEY)
@@ -37,7 +38,7 @@ async def detailed_health_check(settings: Settings = Depends(get_settings)):
     """
     return {
         "status": "healthy",
-        "timestamp": datetime.utcnow().isoformat(),
+        "timestamp": datetime.now(UTC).isoformat(),
         "application": {
             "name": settings.APP_NAME,
             "version": settings.APP_VERSION,

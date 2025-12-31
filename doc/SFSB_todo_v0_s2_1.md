@@ -17,6 +17,8 @@ Step 1: Create Project Directory and Virtual Environment
     python -m venv venv
     
     # Activate virtual environment
+	# requires execution policy change on windows; see farther below in startup/test section
+	# note that you need to run the pip tool inside the venv (or install in both local shell/venv)
     .\venv\Scripts\activate
     
     # Verify activation (you should see (venv) in your prompt)
@@ -51,7 +53,12 @@ Create requirements.txt:
 
     New-Item -ItemType File -Path "requirements.txt"
 
+
 Add the following content to requirements.txt:
+# Version numbers had to be removed
+# note that rust needs to be installed for pydantic 
+#   Get rustup-init.exe from https://rust-lang.org/tools/install/
+#	I left the file I used in the SFSB directory
 
     fastapi==0.109.0
     uvicorn[standard]==0.27.0
@@ -386,7 +393,9 @@ Create run.py in the root directory:
             "app.main:app",
             host=settings.HOST,
             port=settings.PORT,
-            reload=settings.DEBUG
+            reload=settings.DEBUG,
+			# this was needed to run in venv
+			reload_excludes=["venv"] 
         )
 
 * * *
@@ -480,7 +489,9 @@ Step 13: Testing the Application
 
     # Make sure virtual environment is activated
     .\venv\Scripts\activate
-    
+    # note this required setting script permissions on windows; this allows script execution for files created locally 
+	# Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+	
     # Run the application
     python run.py
 
