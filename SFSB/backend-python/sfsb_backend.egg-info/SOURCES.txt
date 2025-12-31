@@ -6102,3 +6102,4 @@ sfsb_backend.egg-info/entry_points.txt
 sfsb_backend.egg-info/requires.txt
 sfsb_backend.egg-info/top_level.txt
 tests/test_health.py
+tests/test_sfsb_init.py

@@ -63,6 +63,7 @@ dev = [
 [project.scripts]
 # Project initializer (Phase 0/1 layout)
 sfsb-init = "sfsb.cli.init:main"
+sfsb-serve = "sfsb.app.main:run_server"
 
 # Planned future commands (stubs for now)
 # sfsb-spec = "sfsb.cli.spec:main"

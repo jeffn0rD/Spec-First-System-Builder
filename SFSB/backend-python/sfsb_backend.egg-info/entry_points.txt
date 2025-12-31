@@ -1,2 +1,3 @@
 [console_scripts]
 sfsb-init = sfsb.cli.init:main
+sfsb-serve = sfsb.app.main:run_server

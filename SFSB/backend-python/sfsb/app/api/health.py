@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 from datetime import datetime
-from app.core.config import Settings, get_settings
+from sfsb.app.core.config import Settings, get_settings
 from datetime import datetime, UTC
 
 router = APIRouter()

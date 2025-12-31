@@ -1,6 +1,6 @@
 import httpx
 from typing import Optional, Dict, Any
-from app.core.config import Settings, get_settings
+from sfsb.app.core.config import Settings, get_settings
 
 
 class OpenRouterService:

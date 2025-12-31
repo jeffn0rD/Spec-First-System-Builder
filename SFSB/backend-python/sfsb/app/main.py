@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.core.config import get_settings
-from app.api import health
+from sfsb.app.core.config import get_settings
+from sfsb.app.api import health
 from contextlib import asynccontextmanager
 
 # Get settings
@@ -63,3 +63,18 @@ async def startup_event():
 async def shutdown_event():
     """Run on application shutdown."""
     print(f"Shutting down {settings.APP_NAME}")
+
+def run_server():
+    """Entry point for sfsb-serve command."""
+    import uvicorn
+    uvicorn.run(
+        "sfsb.app.main:app",
+        host=settings.HOST,
+        port=settings.PORT,
+        reload=settings.DEBUG,
+        reload_excludes=["venv"] 
+    )
+    
+    
+if __name__ == "__main__":
+    run_server()
