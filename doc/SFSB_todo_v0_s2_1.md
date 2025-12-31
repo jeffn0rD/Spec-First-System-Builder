@@ -532,7 +532,7 @@ Open your browser and navigate to:
 Project Structure Summary
 -------------------------
 
-    fastapi-backend/
+    backend-python/					# package; from directory do: pip install -e . 
     ├── app/
     │   ├── __init__.py
     │   ├── main.py                 # Main FastAPI application
@@ -556,6 +556,9 @@ Project Structure Summary
     ├── requirements.txt            # Python dependencies
     └── run.py                      # Application runner
 
+	backend-node/
+	...
+	
 * * *
 
 Summary

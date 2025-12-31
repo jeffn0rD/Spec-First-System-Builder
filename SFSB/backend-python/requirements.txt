@@ -8,3 +8,4 @@ prefect
 jinja2
 sqlalchemy
 python-dotenv
+dowhy

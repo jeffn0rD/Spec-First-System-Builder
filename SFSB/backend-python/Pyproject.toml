@@ -36,7 +36,7 @@ dependencies = [
   "networkx>=3.0",
 
   # Causal inference
-  "dowhy>=0.11.0",
+  "dowhy>=0.8.0",
 
   # Database (you can swap in your preferred stack)
   "sqlalchemy>=2.0.0",
@@ -62,20 +62,20 @@ dev = [
 # ============================================================================
 [project.scripts]
 # Project initializer (Phase 0/1 layout)
-sfsb-init = "backend.cli.init:main"
+sfsb-init = "sfsb.cli.init:main"
 
 # Planned future commands (stubs for now)
-# sfsb-spec = "backend.cli.spec:main"
-# sfsb-cto = "backend.cli.cto:main"
-# sfsb-arch = "backend.cli.arch:main"
-# sfsb-gen = "backend.cli.gen:main"
-# sfsb-build = "backend.cli.build:main"
-# sfsb-metrics = "backend.cli.metrics:main"
-# sfsb-causal = "backend.cli.causal:main"
+# sfsb-spec = "sfsb.cli.spec:main"
+# sfsb-cto = "sfsb.cli.cto:main"
+# sfsb-arch = "sfsb.cli.arch:main"
+# sfsb-gen = "sfsb.cli.gen:main"
+# sfsb-build = "sfsb.cli.build:main"
+# sfsb-metrics = "sfsb.cli.metrics:main"
+# sfsb-causal = "sfsb.cli.causal:main"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["backend*"]
+include = ["sfsb*"]
 
 [tool.black]
 line-length = 100

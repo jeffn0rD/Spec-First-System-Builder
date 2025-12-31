@@ -411,15 +411,21 @@ Implement a Python CLI command sfsb-init that initializes a new project reposito
 	*	-g switch
     *   Optionally run git init in the new project directory.
     *   If you do, add an initial commit with message: "Initial project structure via sfsb-init".
+
 5.  **CLI implementation details:**
     
     *   Use Python's argparse or click for the CLI.
     *   Use pathlib.Path for cross-platform file/folder creation.
+	*	each step of process in a function
+	*	create a stepped (loop) execution pattern for each step.  Functions should be able register-able with their order in the project folder creation process.  
+	*	As it loops through steps, output progress, folders/files created, etc
     *   Print a success message on completion:
         
             ✓ Project '<project-name>' initialized successfully.
             ✓ Next: cd <project-name> && sfsb-spec nl-init
-        
+	
+	*	Create a empty stub function in the script so I can add custom code to the process.  Leave comments how to use.  It would need to 'register' functions and which step(s) to executes on
+	
 6.  **Where to place this CLI:**
     
     *   In the backend repo, under e.g. backend/cli/init.py.
